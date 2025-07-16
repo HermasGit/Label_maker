@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, jsonify
+from flask import Flask, render_template, request, send_file, jsonify, after_this_request
 import os
 from svg_to_pdf import svg_to_pdf
 import tempfile
@@ -33,8 +33,18 @@ def autocomplete_batch_number():
 # --- Add to suggestions when generating labels ---
 @app.route("/generate-labels-pdf", methods=["POST"])
 def generate_labels_pdf():
+    """Generate a PDF of labels from posted JSON data."""
     data = request.json
     label_array = data.get("labels", [])
+
+    # Update autocomplete suggestion sets
+    for lbl in label_array:
+        name = lbl.get("productName", "").strip().upper()
+        batch = lbl.get("batchNumber", "").strip().upper()
+        if name:
+            product_name_suggestions.add(name)
+        if batch:
+            batch_number_suggestions.add(batch)
 
     # Fixed hardcoded values for all label design
     PRODUCT_NAME_FONT_SIZE_MM = 8
@@ -119,12 +129,16 @@ def generate_labels_pdf():
             stickers.append(label)
     stickers = stickers[:LABELS_PER_PAGE]
 
-    svg_file = tempfile.mktemp(suffix=".svg")
-    pdf_file = tempfile.mktemp(suffix=".pdf")
+    svg_temp = tempfile.NamedTemporaryFile(delete=False, suffix=".svg")
+    pdf_temp = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+    svg_file = svg_temp.name
+    pdf_file = pdf_temp.name
+    svg_temp.close()
+    pdf_temp.close()
     dwg = svgwrite.Drawing(svg_file, size=(mm(PAGE_WIDTH_MM), mm(PAGE_HEIGHT_MM)))
 
     # Embed Franklin Gothic Demi font using @font-face in SVG defs with absolute file path for CairoSVG compatibility
-    font_abs_path = os.path.abspath(os.path.join('static', 'font', 'franklingothic_demi.ttf')).replace('\\', '/')
+    font_abs_path = os.path.join(app.root_path, 'static', 'font', 'franklingothic_demi.ttf').replace('\\', '/')
     font_face_css = f'''
     @font-face {{
         font-family: "Franklin Gothic Demi";
@@ -239,6 +253,13 @@ def generate_labels_pdf():
 
     dwg.save()
     svg_to_pdf(svg_file, pdf_file)
+
+    @after_this_request
+    def cleanup(response):
+        os.remove(svg_file)
+        os.remove(pdf_file)
+        return response
+
     return send_file(pdf_file, as_attachment=True, download_name="herbal_product_labels.pdf")
 
 if __name__ == "__main__":
