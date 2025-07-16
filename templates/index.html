@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hermas Label Generator</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='Project-Hermas-Top-logo.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Malayalam:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-background text-foreground font-sans antialiased">
+    <header class="text-center py-8">
+        <img src="{{ url_for('static', filename='Project-Hermas-logo.svg') }}" alt="Logo"
+             class="mx-auto mb-4 w-56 h-auto relative"
+             style="position: relative; left: -15px; top: 13px;" />
+        <h1 class="text-3xl font-bold" style="color:#00B1B8;">LABEL GENERATOR</h1>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Form section -->
+            <div class="lg:w-[58%] xl:w-3/5">
+                <div class="bg-card text-card-foreground rounded-lg border shadow-sm p-6">
+                    <div class="flex flex-col space-y-1.5 pb-3 mb-3 border-b">
+                        <h3 class="text-lg font-semibold leading-none tracking-tight text-primary uppercase">ENTER LABEL DETAILS</h3>
+                    </div>
+                    <form id="labelForm" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                            <div>
+                                <label for="productName" class="block text-sm font-medium text-foreground/90 mb-1">Product Name:</label>
+                                <input type="text" id="productName" name="productName" maxlength="17" required class="flex h-10 w-full rounded-md border border-border bg-input px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" placeholder="ഉത്പന്നത്തിൻ്റെ പേര്">
+                            </div>
+                            <div>
+                                <label for="batchNumber" class="block text-sm font-medium text-foreground/90 mb-1">Batch Number:</label>
+                                <input type="text" id="batchNumber" name="batchNumber" maxlength="5" required class="flex h-10 w-full rounded-md border border-border bg-input px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" placeholder="ബാച്ച് നമ്പർ">
+                            </div>
+                            <div>
+                                <label for="quantityInBox" class="block text-sm font-medium text-foreground/90 mb-1">Quantity in Box:</label>
+                                <input type="text" id="quantityInBox" name="quantityInBox" maxlength="8" required class="flex h-10 w-full rounded-md border border-border bg-input px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" placeholder="ബോക്സിലെ അളവ്">
+                            </div>
+                            <div>
+                                <label for="weightVolumeValue" class="block text-sm font-medium text-foreground/90 mb-1">Weight/Volume:</label>
+                                <div class="flex gap-2">
+                                    <input type="number" id="weightVolumeValue" name="weightVolumeValue" min="0" max="999" maxlength="3" required class="flex h-10 w-2/3 rounded-md border border-border bg-input px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" placeholder="അളവ്">
+                                    <select id="weightVolumeUnit" name="weightVolumeUnit" required class="flex h-10 w-1/3 rounded-md border border-border bg-input px-2 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                                        <option value="kg">kg</option>
+                                        <option value="gm">gm</option>
+                                        <option value="ml">ml</option>
+                                        <option value="qty">qty</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="mfgDate" class="block text-sm font-medium text-foreground/90 mb-1">Manufacture Date:</label>
+                                <input type="text" id="mfgDate" name="mfgDate" maxlength="11" required class="flex h-10 w-full rounded-md border border-border bg-input px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" placeholder="നിർമ്മാണ തീയതി">
+                            </div>
+                            <div>
+                                <label for="numberOfStickers" class="block text-sm font-medium text-foreground/90 mb-1">Number of Stickers:</label>
+                                <input type="number" id="numberOfStickers" name="numberOfStickers" required min="1" class="flex h-10 w-full rounded-md border border-border bg-input px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" placeholder="സ്റ്റിക്കറുകളുടെ എണ്ണം" value="">
+                            </div>
+                        </div>
+                        <div class="pt-4 flex flex-col items-center button-container">
+                            <div class="pt-4 flex justify-center">
+                                <button type="button" id="addToQueueButton" class="btn">
+                                    Add to PDF Array
+                                </button>
+                            </div>
+                            <button type="button" id="clearFormButton" class="btn btn-red">
+                                Clear all ?
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Queue section -->
+            <div class="lg:w-[42%] xl:w-2/5">
+                <div class="bg-card text-card-foreground rounded-lg border shadow-sm h-full flex flex-col p-6">
+                    <div class="flex flex-col space-y-1.5 pb-3 mb-3 border-b">
+                       <h3 class="text-lg font-semibold leading-none tracking-tight text-primary uppercase">STICKER ARRAY</h3>
+                    </div>
+                    <div class="text-sm text-muted-foreground pt-1 pb-3 space-y-1">
+                        <p><strong class="text-black">Sticker Loaded:</strong> <span id="queueStatus" class="font-medium text-foreground">0 / 21</span></p>
+                    </div>
+                    <div class="flex-grow overflow-hidden">
+                        <div id="labelQueueList" class="h-[300px] overflow-y-auto pr-3 space-y-3">
+                            <p class="empty-queue-message text-muted-foreground text-center py-10">Array is empty. Add labels using the form.</p>
+                            <!-- Queued labels will be dynamically inserted here -->
+                    </div>
+                    <div class="pt-4 mt-4 border-t flex flex-col items-center button-container">
+                        <button type="button" id="generateAllButton" style="width: 250px; white-space: nowrap;">
+                            <svg class="svg-icon" style="width: 1em;height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M896 256v662.741333c-0.298667 34.944-4.266667 48.213333-11.392 61.610667-7.424 13.909333-18.346667 24.832-32.256 32.256l-1.536 0.810667c-13.184 6.784-27.050667 10.453333-62.122667 10.581333H237.397333c-38.058667 0-51.84-3.968-65.706666-11.392a77.525333 77.525333 0 0 1-32.298667-32.256l-0.853333-1.578667C131.84 965.632 128.170667 951.765333 128 916.693333V109.397333c0-38.058667 3.968-51.84 11.392-65.706666 7.424-13.952 18.346667-24.874667 32.256-32.298667l1.578667-0.853333C186.368 3.84 200.234667 0.170667 235.306667 0H640l256 256z" fill="#CD1E2C" />
+                                <path d="M640 0l256 256h-184.874667c-24.746667 0-33.706667-2.56-42.752-7.424a50.389333 50.389333 0 0 1-20.949333-20.949333l-0.725333-1.365334c-4.394667-8.618667-6.698667-17.877333-6.698667-41.386666V0z" fill="#AE0715" />
+                                <path d="M319.786667 657.066667v-58.453334h23.210666c53.546667 0 74.538667-17.194667 74.538667-66.602666 0-45.610667-17.749333-64.426667-74.538667-64.426667H278.272V657.066667h41.514667z m17.749333-91.733334h-17.749333v-65.024h17.749333c27.861333 0 37.674667 8.192 37.674667 32.512 0 25.130667-9.557333 32.512-37.674667 32.512z m178.858667 91.733334c55.722667 0 92.288-21.589333 92.288-94.72 0-78.933333-36.565333-94.805333-92.288-94.805334H451.413333V657.066667h64.981334z m-2.176-35.498667h-21.333334v-119.04h21.333334c34.133333 0 51.626667 10.922667 51.626666 59.776 0 46.165333-16.64 59.264-51.626666 59.264z m173.397333 35.498667v-73.728h68.821333v-35.754667h-68.821333v-43.946667h74.24v-36.096h-115.754667V657.066667h41.514667z" fill="#FFFFFF" />
+                            </svg>
+                            <span class="now">?</span>
+                            <span class="play">Generate All Labels ?</span>
+                        </button>
+                        <button type="button" id="clearAllArrayButton" class="btn btn-red" style="width: 250px;">
+                            Clear all ?
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+    <footer class="w-full text-center py-8 border-t border-border">
+        <p class="text-sm text-muted-foreground">
+            Label Generator Developed by TM Hermas
+        </p>
+    </footer>
+
+    <!-- Modal -->
+    <div id="notificationModal" class="fixed inset-0 bg-gray-800/75 items-center justify-center p-4 z-50 hidden transition-opacity duration-300 ease-in-out">
+        <div class="bg-card p-6 rounded-lg shadow-xl max-w-sm w-full transform transition-all duration-300 ease-in-out scale-95 opacity-0" id="modalContentContainer">
+            <h3 id="modalTitle" class="text-lg font-semibold mb-2 text-card-foreground">Notification</h3>
+            <p id="modalMessage" class="text-sm text-muted-foreground mb-4"></p>
+            <button id="modalCloseButton" class="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <div id="toastContainer" style="position:fixed;left:0;right:0;bottom:0;z-index:99999;pointer-events:none;"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+
