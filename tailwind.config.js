@@ -1,6 +1,7 @@
 module.exports = {
   content: [
-    "./public/**/*.{html,js}",
+    "./templates/**/*.html",
+    "./static/**/*.js"
   ],
   theme: {
     extend: {
@@ -26,24 +27,3 @@ module.exports = {
         accent: {
           DEFAULT: 'hsl(189, 90%, 40%)',
           foreground: 'hsl(0, 0%, 100%)'
-        },
-        destructive: {
-          DEFAULT: 'hsl(30, 85%, 50%)',
-          foreground: 'hsl(0, 0%, 100%)'
-        },
-        border: 'hsl(220, 20%, 88%)',
-        input: 'hsl(0, 0%, 100%)',
-        ring: 'hsl(189, 90%, 75%)',
-      },
-      borderRadius: {
-        lg: '0.5rem',
-        md: 'calc(0.5rem - 2px)',
-        sm: 'calc(0.5rem - 4px)'
-      },
-      fontFamily: {
-        sans: ['Poppins', 'Noto Sans Malayalam', 'sans-serif'],
-      },
-    },
-  },
-  plugins: [],
-}
