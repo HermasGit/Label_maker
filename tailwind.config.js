@@ -1,29 +1,25 @@
-module.exports = {
-  content: [
-    "./templates/**/*.html",
-    "./static/**/*.js"
-  ],
-  theme: {
-    extend: {
-      colors: {
-        background: 'hsl(220, 30%, 97%)',
-        foreground: 'hsl(220, 25%, 25%)',
-        card: 'hsl(0, 0%, 100%)',
-        'card-foreground': 'hsl(220, 25%, 25%)',
-        popover: 'hsl(0, 0%, 100%)',
-        'popover-foreground': 'hsl(220, 25%, 25%)',
-        primary: {
-          DEFAULT: 'hsl(189, 99%, 31%)', // #01889F
-          foreground: 'hsl(0, 0%, 100%)'
-        },
-        secondary: {
-          DEFAULT: 'hsl(189, 80%, 92%)',
-          foreground: 'hsl(189, 90%, 25%)'
-        },
-        muted: {
-          DEFAULT: 'hsl(220, 15%, 80%)',
-          foreground: 'hsl(220, 15%, 50%)'
-        },
-        accent: {
-          DEFAULT: 'hsl(189, 90%, 40%)',
-          foreground: 'hsl(0, 0%, 100%)'
+import io
+import pytest
+from importlib import import_module
+
+app = import_module("app").app
+
+
+def test_generate_labels_pdf():
+    client = app.test_client()
+    payload = {
+        "labels": [
+            {
+                "productName": "Test", 
+                "batchNumber": "B1", 
+                "quantityInBox": "10", 
+                "mfgDate": "2024-01", 
+                "weightVolume": "50 g", 
+                "numberOfStickers": 1
+            }
+        ]
+    }
+    resp = client.post('/generate-labels-pdf', json=payload)
+    assert resp.status_code == 200
+    assert resp.headers['Content-Type'] == 'application/pdf'
+    assert len(resp.data) > 100
