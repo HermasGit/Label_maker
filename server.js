@@ -5,12 +5,12 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve all static files in the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static assets from the existing 'static' folder
+app.use(express.static(path.join(__dirname, 'static')));
 
-// Default route to serve index.html from 'public'
+// Default route to serve index.html from the Flask templates folder
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'templates', 'index.html'));
 });
 
 app.listen(PORT, () => {
